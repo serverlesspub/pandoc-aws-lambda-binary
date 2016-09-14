@@ -1,0 +1,24 @@
+{
+  "name": "pandoc-aws-lambda-binary",
+  "version": "1.0.0",
+  "description": "pandoc precompiled binary for AWS Lambda with a Node.js wrapper",
+  "main": "pandoc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claudiajs/pandoc-aws-lambda-binary.git"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "pandoc",
+    "serverless",
+    "docx",
+    "markdown"
+  ],
+  "author": "Gojko Adzic <gojko@gojko.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/claudiajs/pandoc-aws-lambda-binary/issues"
+  },
+  "homepage": "https://github.com/claudiajs/pandoc-aws-lambda-binary#readme"
+}
