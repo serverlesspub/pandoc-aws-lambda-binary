@@ -1,4 +1,4 @@
-/*global module, require, console, __dirname, Promise */
+/*global module, require, __dirname, Promise */
 var os = require('os'),
 	path = require('path'),
 	fs = require('fs'),

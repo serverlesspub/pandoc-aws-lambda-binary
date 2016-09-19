@@ -3,8 +3,7 @@ var childProcess = require('child_process'),
 	execPromise = function (command) {
 		'use strict';
 		return new Promise(function (resolve, reject) {
-			childProcess.exec(command, function (err, result) {
-				console.log('exec complete', err, result);
+			childProcess.exec(command, function (err) {
 				if (err) {
 					reject(err);
 				} else {
@@ -20,7 +19,6 @@ var childProcess = require('child_process'),
 			process.stdout.on('data', console.log);
 			process.stderr.on('data', console.error);
 			process.on('close', function (code) {
-				console.log('spawn ended', code);
 				if (code !== 0) {
 					reject(code);
 				} else {
