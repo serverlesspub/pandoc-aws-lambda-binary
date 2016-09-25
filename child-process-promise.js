@@ -16,8 +16,12 @@ var childProcess = require('child_process'),
 		'use strict';
 		return new Promise(function (resolve, reject) {
 			var process = childProcess.spawn(command, options);
-			process.stdout.on('data', console.log);
-			process.stderr.on('data', console.error);
+			process.stdout.on('data', function (buffer) {
+				console.log(buffer.toString());
+			});
+			process.stderr.on('data', function (buffer) {
+				console.error(buffer.toString());
+			});
 			process.on('close', function (code) {
 				if (code !== 0) {
 					reject(code);
