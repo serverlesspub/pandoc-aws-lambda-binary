@@ -1,6 +1,6 @@
 {
   "name": "pandoc-aws-lambda-binary",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "pandoc precompiled binary for AWS Lambda with a Node.js wrapper",
   "main": "pandoc.js",
   "repository": {
