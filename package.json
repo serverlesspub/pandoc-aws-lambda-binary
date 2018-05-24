@@ -1,8 +1,11 @@
 {
   "name": "pandoc-aws-lambda-binary",
-  "version": "1.0.2",
+  "version": "2.2.1",
   "description": "pandoc precompiled binary for AWS Lambda with a Node.js wrapper",
-  "main": "pandoc.js",
+  "main": "src/pandoc.js",
+  "scripts": {
+    "eslint": "eslint *.js src"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/claudiajs/pandoc-aws-lambda-binary.git"
@@ -20,5 +23,10 @@
   "bugs": {
     "url": "https://github.com/claudiajs/pandoc-aws-lambda-binary/issues"
   },
-  "homepage": "https://github.com/claudiajs/pandoc-aws-lambda-binary#readme"
+  "homepage": "https://github.com/claudiajs/pandoc-aws-lambda-binary#readme",
+  "devDependencies": {
+    "eslint": "^3.12.2",
+    "eslint-config-crockford": "^0.2.0",
+    "eslint-config-defaults": "^9.0.0"
+  }
 }

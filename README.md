@@ -6,7 +6,7 @@ Check out the [Running Pandoc on Lambda Guide](https://claudiajs.com/tutorials/p
 
 ## Usage without Node.js
 
-To use without Node.js, grab the binary from [vendor/pandoc.gz](vendor/pandoc.gz) and upload to Lambda yourself.
+To use without Node.js, grab the binary from [vendor/pandoc.gz](vendor/pandoc.gz) and upload to Lambda yourself. This is gzipped to save space, so unpack it first before executing.
 
 ## Usage from Node.js
 
@@ -41,16 +41,27 @@ The `pandoc` function is asynchronous and returns a JavaScript Promise, that wil
 
 Check out the [Pandoc S3 Converter Example Project](https://github.com/claudiajs/example-projects/tree/master/pandoc-s3-converter) to see how to wire everything up into a Lambda function.
 
+## Local usage
+
+To run this in local tests, define a `PANDOC_PATH` environment variable and set it to your local Pandoc executable. It will then use the provided executable instead of unpacking the Lambda binary
+
 ## Version information
 
-Compiled for `ami-60b6c60a`, for Linux kernel version – 4.1.27-25.49.amzn1.x86_64. 
+Compiled for (`ami-4fffc83`)[https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2;sort=name], for Linux kernel version 4.9.38-16.35.amzn1.x86_64.
 
-Pandoc 1.17.2, Compiled with texmath 0.8.6.5, highlighting-kate 0.6.2.1.
-
-Syntax highlighting is supported for the following languages: abc, actionscript, ada, agda, apache, asn1, asp, awk, bash, bibtex, boo, c, changelog, clojure, cmake, coffee, coldfusion, commonlisp, cpp, cs, css, curry, d, diff, djangotemplate, dockerfile, dot, doxygen, doxygenlua, dtd, eiffel, elixir, email, erlang, fasm, fortran, fsharp, gcc, glsl, gnuassembler, go, hamlet, haskell, haxe, html, idris, ini, isocpp, java, javadoc, javascript, json, jsp, julia, kotlin, latex, lex, lilypond, literatecurry, literatehaskell, llvm, lua, m4, makefile, mandoc, markdown, mathematica, matlab, maxima, mediawiki, metafont, mips, modelines, modula2, modula3, monobasic, nasm, noweb, objectivec, objectivecpp, ocaml, octave, opencl, pascal, perl, php, pike, postscript, prolog, pure, python, r, relaxng, relaxngcompact, rest, rhtml, roff, ruby, rust, scala, scheme, sci, sed, sgml, sql, sqlmysql, sqlpostgresql, tcl, tcsh, texinfo, verilog, vhdl, xml, xorg, xslt, xul, yacc, yaml, zsh
+```
+pandoc 2.2.1
+Compiled with pandoc-types 1.17.4.2, texmath 0.11.0.1, skylighting 0.7.1
+Default user data directory: /home/ec2-user/.pandoc
+Copyright (C) 2006-2018 John MacFarlane
+Web:  http://pandoc.org
+This is free software; see the source for copying conditions.
+There is no warranty, not even for merchantability or fitness
+for a particular purpose.
+```
 
 ### License
 
 To keep things consistent, this library is released under GPL. If this is a problem for you, check out the [Running Pandoc on Lambda Guide](https://claudiajs.com/tutorials/pandoc-lambda.html) for information on how to produce the binary yourself.
 
-Pandoc is free software, released under the GPL. © 2006-2016 John MacFarlane. 
+Pandoc is free software, released under the GPL. © 2006-2018 John MacFarlane. 
