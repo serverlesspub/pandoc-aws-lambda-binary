@@ -12,10 +12,10 @@ const childProcess = require('child_process'),
 			});
 		});
 	},
-	spawnPromise = function (command, options) {
+	spawnPromise = function (command, options, envOptions) {
 		'use strict';
 		return new Promise((resolve, reject) => {
-			const process = childProcess.spawn(command, options);
+			const process = childProcess.spawn(command, options, envOptions);
 			process.stdout.on('data', buffer => console.log(buffer.toString()));
 			process.stderr.on('data', buffer => console.error(buffer.toString()));
 			process.on('close', (code) => {
