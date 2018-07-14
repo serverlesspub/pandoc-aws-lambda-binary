@@ -47,7 +47,7 @@ To run this in local tests, define a `PANDOC_PATH` environment variable and set 
 
 ## Version information
 
-Compiled for (`ami-4fffc83`)[https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2;sort=name], for Linux kernel version 4.9.38-16.35.amzn1.x86_64.
+Compiled for [`ami-4fffc83`](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2;sort=name), for Linux kernel version 4.9.38-16.35.amzn1.x86_64.
 
 ```
 pandoc 2.2.1
