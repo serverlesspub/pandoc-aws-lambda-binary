@@ -1,0 +1,18 @@
+Description: Pandoc AWS Lambda Layer 
+
+Resources:
+  PandocLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs8.10
+      Description: Pandoc for AWS Lambda
+      LayerName: pandoc
+      LicenseInfo: GPL-2.0-or-later
+      Content:
+        S3Bucket: DEPLOYMENT_BUCKET_NAME
+        S3Key: DEPLOYMENT_KEY
+
+Outputs:
+  PandocLayer: 
+    Value: !Ref PandocLayer
