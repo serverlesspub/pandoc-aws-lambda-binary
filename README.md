@@ -4,7 +4,7 @@ This is a precompiled version of [Pandoc](http://pandoc.org/) for the Amazon Lin
 
 ## Use within Lambda
 
-You can use a pre-deployed `ARN: arn:aws:lambda:us-east-1:818931230230:layer:pandoc:6` or deploy yourself -- edit Makefile to set your deployment bucket etc, then just run `make deploy`.
+You can use a pre-deployed ARN: `arn:aws:lambda:us-east-1:818931230230:layer:pandoc:6` or deploy yourself -- edit Makefile to set your deployment bucket etc, then just run `make deploy`.
 
 The binary will be in `/opt/bin/pandoc` inside your Lambda container.
 
