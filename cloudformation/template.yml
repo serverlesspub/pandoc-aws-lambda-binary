@@ -1,4 +1,9 @@
 Description: Pandoc AWS Lambda Layer 
+Parameters:
+  AllowedPrincipal:
+    Type: String
+    Description: Account principal allowed to deploy this layer
+    Default: '*'
 
 Resources:
   PandocLayer:
@@ -12,6 +17,13 @@ Resources:
       Content:
         S3Bucket: DEPLOYMENT_BUCKET_NAME
         S3Key: DEPLOYMENT_KEY
+
+  DeploymentPermission:
+    Type: "AWS::Lambda::LayerVersionPermission"
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn: !Ref PandocLayer
+      Principal: !Ref AllowedPrincipal
 
 Outputs:
   PandocLayer: 
