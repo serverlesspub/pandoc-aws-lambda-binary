@@ -1,4 +1,4 @@
-DEPLOYMENT_BUCKET_NAME := claudia-layers
+DEPLOYMENT_BUCKET_NAME := desole-packaging
 DEPLOYMENT_KEY := $(shell echo pandoc-$$RANDOM.zip)
 STACK_NAME := pandoc-lambda-layer
 
