@@ -26,7 +26,7 @@ all: build result cache
 
 STACK_NAME ?= pandoc-layer 
 
-result/bin/pandoc: all
+#result/bin/pandoc: all
 
 build/output.yaml: template.yaml result/bin/pandoc
 	aws cloudformation package --template $< --s3-bucket $(DEPLOYMENT_BUCKET) --output-template-file $@
@@ -35,6 +35,6 @@ deploy: build/output.yaml
 	aws cloudformation deploy --template $< --stack-name $(STACK_NAME)
 	aws cloudformation describe-stacks --stack-name $(STACK_NAME) --query Stacks[].Outputs --output table
 
-deploy-example: deploy
+deploy-example:
 	cd example && \
-		make deploy DEPLOYMENT_BUCKET=$(DEPLOYMENT_BUCKET) IMAGE_MAGICK_STACK_NAME=$(STACK_NAME)
+		make deploy DEPLOYMENT_BUCKET=$(DEPLOYMENT_BUCKET) PANDOC_STACK_NAME=$(STACK_NAME)

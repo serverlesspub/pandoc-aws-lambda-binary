@@ -22,7 +22,7 @@ exports.handler = function (eventObject, context) {
 	console.log('converting', inputBucket, key, 'using', inputFile);
 	return s3Util.downloadFileFromS3(inputBucket, key, inputFile)
 		.then(() => childProcessPromise.spawn(
-			'/opt/pandoc',
+			'/opt/bin/pandoc',
 			[inputFile, '-o', outputFile],
 			{env: process.env, cwd: workdir}
 		))

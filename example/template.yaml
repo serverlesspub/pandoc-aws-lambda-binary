@@ -8,10 +8,10 @@ Parameters:
     Type: String
   ConversionFileType:
     Type: String
-    Default: pdf
+    Default: html
   ConversionMimeType:
     Type: String
-    Default: applicaton/pdf
+    Default: text/html 
 Resources:
   UploadBucket:
     Type: AWS::S3::Bucket
