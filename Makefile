@@ -1,25 +1,40 @@
-DEPLOYMENT_BUCKET_NAME := desole-packaging
-DEPLOYMENT_KEY := $(shell echo pandoc-$$RANDOM.zip)
-STACK_NAME := pandoc-lambda-layer
+PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-clean: 
-	rm -rf build
+DOCKER_IMAGE ?= lambci/lambda-base-2:build
+TARGET ?=/opt/
 
-build/bin/pandoc: vendor/pandoc.gz
-	mkdir -p build/bin
-	cp vendor/pandoc.gz build/bin
-	gzip -d build/bin/pandoc.gz
+MOUNTS = -v $(PROJECT_ROOT):/var/task \
+	-v $(PROJECT_ROOT)result:$(TARGET) \
+	-v $(PROJECT_ROOT)cache:/usr/local
 
-build/layer.zip: build/bin/pandoc
-	cd build && zip -r layer.zip bin
+DOCKER = docker run -it --rm -w=/var/task/build
+build result cache: 
+	mkdir $@
 
-# cloudformation has no support for packaging layers yet, so need to do this manually
-#
-build/output.yml: build/layer.zip cloudformation/template.yml
-	aws s3 cp build/layer.zip s3://$(DEPLOYMENT_BUCKET_NAME)/$(DEPLOYMENT_KEY)
-	sed "s:DEPLOYMENT_BUCKET_NAME:$(DEPLOYMENT_BUCKET_NAME):;s:DEPLOYMENT_KEY:$(DEPLOYMENT_KEY):" cloudformation/template.yml > build/output.yml
+clean:
+	rm -rf build result cache
 
-deploy: build/output.yml
-	aws cloudformation deploy --template-file build/output.yml --stack-name $(STACK_NAME)
-	aws cloudformation describe-stacks --stack-name $(STACK_NAME) --query Stacks[].Outputs[].OutputValue --output text
+test:
+	$(DOCKER) $(MOUNTS) --entrypoint /opt/bin/pandoc -t $(DOCKER_IMAGE) -v
 
+bash:
+	$(DOCKER) $(MOUNTS) --entrypoint /bin/bash -t $(DOCKER_IMAGE)
+
+all: build result cache 
+	$(DOCKER) $(MOUNTS) --entrypoint /usr/bin/make -t $(DOCKER_IMAGE) TARGET_DIR=$(TARGET) -f ../Makefile_ImageMagick $@
+
+
+STACK_NAME ?= pandoc-layer 
+
+result/bin/pandoc: all
+
+build/output.yaml: template.yaml result/bin/pandoc
+	aws cloudformation package --template $< --s3-bucket $(DEPLOYMENT_BUCKET) --output-template-file $@
+
+deploy: build/output.yaml
+	aws cloudformation deploy --template $< --stack-name $(STACK_NAME)
+	aws cloudformation describe-stacks --stack-name $(STACK_NAME) --query Stacks[].Outputs --output table
+
+deploy-example: deploy
+	cd example && \
+		make deploy DEPLOYMENT_BUCKET=$(DEPLOYMENT_BUCKET) IMAGE_MAGICK_STACK_NAME=$(STACK_NAME)

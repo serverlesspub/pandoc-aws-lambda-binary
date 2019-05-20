@@ -1,0 +1,63 @@
+GHC_VERSION ?= 8.4.4
+CABAL_VERSION ?= 2.2.0.0
+EPEL_VERSION ?= latest-7
+
+TARGET_DIR ?= /opt/
+PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+CACHE_DIR=$(PROJECT_ROOT)build/cache
+
+.ONESHELL:
+
+### step 1: install GHC
+# GHC is self-referential, so we need some version of GHC to install the latest version;
+# so first install the older one that comes with EPEL on RPM, then update to the latest
+
+GHC_SOURCE=ghc-$(GHC_VERSION)-x86_64-centos70-linux.tar.xz
+
+/etc/yum.repos.d/epel.repo:
+	curl -LO https://dl.fedoraproject.org/pub/epel/epel-release-$(EPEL_VERSION).noarch.rpm
+	rpm -i epel-release-$(EPEL_VERSION).noarch.rpm
+
+/usr/bin/ghc: /etc/yum.repos.d/epel.repo
+	yum install ghc -y
+
+$(GHC_SOURCE):
+	curl -LO https://downloads.haskell.org/~ghc/$(GHC_VERSION)/$(GHC_SOURCE)
+
+	
+/usr/local/bin/ghc: $(GHC_SOURCE) /usr/bin/ghc
+	tar xf $(GHC_SOURCE)
+	rm $(GHC_SOURCE)
+	cd ghc*
+	./configure --prefix=/usr/local
+	make install
+
+
+### step 2: set up a cabal sandbox
+
+CABAL_SOURCE=cabal-install-$(CABAL_VERSION)-x86_64-unknown-linux.tar.gz
+	
+$(CABAL_SOURCE): 
+	curl -LO https://www.haskell.org/cabal/release/cabal-install-$(CABAL_VERSION)/$(CABAL_SOURCE)
+
+/usr/local/bin/cabal: $(CABAL_SOURCE) /usr/local/bin/ghc
+	tar xf $(CABAL_SOURCE)
+	mv cabal /usr/local/bin
+
+/root/.cabal/packages/hackage.haskell.org: /usr/local/bin/cabal
+	cabal update
+
+cabal.sandbox.config: /root/.cabal/packages/hackage.haskell.org
+	cabal sandbox init --sandbox .
+
+### step 3: compile pandoc
+
+
+bin/pandoc: cabal.sandbox.config
+	cabal install --disable-documentation pandoc -fembed_data_files 
+
+$(TARGET_DIR)bin/pandoc: bin/pandoc
+	mkdir -p $(TARGET_DIR)bin
+	cp bin/pandoc $(TARGET_DIR)bin
+
+all: $(TARGET_DIR)bin/pandoc
