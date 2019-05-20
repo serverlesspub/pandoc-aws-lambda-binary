@@ -59,7 +59,7 @@ make deploy DEPLOYMENT_BUCKET=<YOUR BUCKET NAME>
 
 ### configuring the deployment
 
-By default, this uses imagemagick-layer as the stack name. Provide a `STACK_NAME` variable when
+By default, this uses `pandoc-layer` as the stack name. Provide a `STACK_NAME` variable when
 calling `make deploy` to use an alternative name.
 
 ### example usage
