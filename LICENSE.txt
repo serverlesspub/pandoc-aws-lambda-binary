@@ -1,0 +1,1 @@
+GPL v2, see https://github.com/jgm/pandoc/blob/master/COPYRIGHT
