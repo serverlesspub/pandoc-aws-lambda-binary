@@ -4,17 +4,14 @@ Description: >
   Example project demonstrating the usage of the ImageMagic Layer for AWS Linux 2 runtimes.
 
 Parameters:
-  ImageMagickLayer:
+  PandocLayer:
     Type: String
   ConversionFileType:
     Type: String
-    Default: png
+    Default: pdf
   ConversionMimeType:
     Type: String
-    Default: image/png 
-  ThumbnailWidth:
-    Type: Number
-    Default: 500
+    Default: applicaton/pdf
 Resources:
   UploadBucket:
     Type: AWS::S3::Bucket
@@ -31,7 +28,7 @@ Resources:
       Runtime: nodejs10.x
       CodeUri: src
       Layers:
-        - !Ref ImageMagickLayer
+        - !Ref PandocLayer
       Policies:
       - S3CrudPolicy:
           BucketName: !Sub "${AWS::StackName}-*"
@@ -40,7 +37,6 @@ Resources:
           OUTPUT_BUCKET: !Ref ResultsBucket
           EXTENSION: !Sub '.${ConversionFileType}'
           MIME_TYPE: !Ref ConversionMimeType
-          THUMB_WIDTH: !Ref ThumbnailWidth
       Events:
         FileUpload:
           Type: S3

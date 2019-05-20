@@ -22,8 +22,8 @@ exports.handler = function (eventObject, context) {
 	console.log('converting', inputBucket, key, 'using', inputFile);
 	return s3Util.downloadFileFromS3(inputBucket, key, inputFile)
 		.then(() => childProcessPromise.spawn(
-			'/opt/bin/convert',
-			[inputFile, '-resize', `${THUMB_WIDTH}x`, outputFile],
+			'/opt/pandoc',
+			[inputFile, '-o', outputFile],
 			{env: process.env, cwd: workdir}
 		))
 		.then(() => s3Util.uploadFileToS3(OUTPUT_BUCKET, resultKey, outputFile, MIME_TYPE));

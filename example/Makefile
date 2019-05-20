@@ -1,7 +1,7 @@
-STACK_NAME ?= imagemagick-layer-example
-IMAGE_MAGICK_STACK_NAME ?= imagemagick-layer
+STACK_NAME ?= pandoc-layer-example
+PANDOC_STACK_NAME ?= pandoc-layer
 
-IMAGEMAGICK_LAYER ?=$(shell aws cloudformation describe-stacks --stack-name $(IMAGE_MAGICK_STACK_NAME) --query Stacks[].Outputs[].OutputValue --output text)
+PANDOC_LAYER ?=$(shell aws cloudformation describe-stacks --stack-name $(PANDOC_STACK_NAME) --query Stacks[].Outputs[].OutputValue --output text)
 SOURCES=$(shell find src/)
 
 clean: 
@@ -12,6 +12,6 @@ output.yaml: template.yaml $(SOURCES)
 	aws cloudformation package --template-file $< --output-template-file $@ --s3-bucket $(DEPLOYMENT_BUCKET)
 
 deploy: output.yaml
-	aws cloudformation deploy --template-file $< --stack-name $(STACK_NAME) --capabilities CAPABILITY_IAM --parameter-overrides ImageMagickLayer=$(IMAGEMAGICK_LAYER)
+	aws cloudformation deploy --template-file $< --stack-name $(STACK_NAME) --capabilities CAPABILITY_IAM --parameter-overrides PandocLayer=$(PANDOC_LAYER)
 	aws cloudformation describe-stacks --stack-name $(STACK_NAME) --query Stacks[].Outputs --output table
 
