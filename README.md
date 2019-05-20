@@ -1,34 +1,85 @@
 # Pandoc for AWS Lambda
 
-This is a precompiled version of [Pandoc](http://pandoc.org/) for the Amazon Linux machine image used by AWS Lambda, deployable as an AWS lambda layer. It can help you get started quickly with Pandoc inside Lambda functions.
+Scripts to compile Pandoc for AWS Lambda instances powered by Amazon Linux 2.x, such as the `nodejs10.x` runtime, and the updated 2018.03 Amazon Linux 1 runtimes. 
 
-## Use within Lambda
+## Usage
 
-You can use a pre-deployed ARN: `arn:aws:lambda:us-east-1:145266761615:layer:pandoc:1` or deploy yourself -- edit Makefile to set your deployment bucket etc, then just run `make deploy`.
+Absolutely the easiest way of using this is to pull it directly from the AWS Serverless Application repository into a CloudFormation/SAM application, or deploy directly from the Serverless Application Repository into your account, and then link as a layer. 
 
-The binary will be in `/opt/bin/pandoc` inside your Lambda container.
+The `pandoc` binary will be in `/opt/bin/pandoc` after linking the layer to a Lambda function.
 
-## Build it yourself
+For more information, check out the [pandoc-lambda-layer](https://console.aws.amazon.com/serverlessrepo/home?region=us-east-1#/published-applications/arn:aws:serverlessrepo:us-east-1:145266761615:applications~pandoc-lambda-layer) application in the Serverless App Repository.
 
-Check out the [Running Pandoc on Lambda Guide](https://claudiajs.com/tutorials/pandoc-lambda.html) for information on how this binary was produced, and how to compile a different version yourself with modified options.
+For manual deployments and custom builds, read below...
 
-## Version information
+## Prerequisites
 
-Compiled for [`ami-4fffc83`](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2;sort=name), for Linux kernel version 4.9.38-16.35.amzn1.x86_64.
+* Docker desktop
+* Unix Make environment
+* AWS command line utilities (just for deployment)
+
+## Compiling the code
+
+* start Docker services
+* `make all`
+
+There are two `make` scripts in this project.
+
+* [`Makefile`](Makefile) is intended to run on the build system, and just starts a Docker container matching the AWS Linux 2 environment for Lambda runtimes to compile Pandoc using the second script.
+* [`Makefile_Pandoc`](Makefile_Pandoc) is the script that will run inside the container, and actually compile binaries. 
+
+The output will be in the `result` dir.
+
+### Configuring the build
+
+By default, this compiles a version expecting to run as a Lambda layer from `/opt`. You can change the expected location by providing a `TARGET` variable when invoking `make`.
+
+The default Docker image used is `lambci/lambda-base-2:build`. To use a different base, provide a `DOCKER_IMAGE` variable when invoking `make`.
+
+Modify the versions of libraries or Pandoc directly in [`Makefile_Pandoc`](Makefile_Pandoc).
+
+### Experimenting
+
+* `make bash` to open an interactive shell with all the build directories mounted
+
+### Compiled info
 
 ```
-pandoc 2.2.1
-Compiled with pandoc-types 1.17.4.2, texmath 0.11.0.1, skylighting 0.7.1
-Default user data directory: /home/ec2-user/.pandoc
-Copyright (C) 2006-2018 John MacFarlane
-Web:  http://pandoc.org
-This is free software; see the source for copying conditions.
-There is no warranty, not even for merchantability or fitness
-for a particular purpose.
+pandoc 2.7.2
+Compiled with pandoc-types 1.17.5.4, texmath 0.11.2.2, skylighting 0.7.7
 ```
 
-### License
+## Deploying to AWS as a layer
 
-To keep things consistent, this library is released under GPL (v2 or later). If this is a problem for you, check out the [Running Pandoc on Lambda Guide](https://claudiajs.com/tutorials/pandoc-lambda.html) for information on how to produce the binary yourself.
+Run the following command to deploy the compiled result as a layer in your AWS account.
 
-Pandoc is free software, released under the GPL. © 2006-2018 John MacFarlane. 
+```
+make deploy DEPLOYMENT_BUCKET=<YOUR BUCKET NAME>
+```
+
+### configuring the deployment
+
+By default, this uses imagemagick-layer as the stack name. Provide a `STACK_NAME` variable when
+calling `make deploy` to use an alternative name.
+
+### example usage
+
+An example project is in the [example](example) directory. It sets up two buckets, and listens to file uploads on the first bucket to convert and generate HTML files from markdown. You can deploy it from the root Makefile using:
+
+```
+make deploy-example DEPLOYMENT_BUCKET=<YOUR BUCKET NAME>
+```
+
+For more information, check out:
+
+* https://pandoc.org/installing.html
+
+## Author
+
+Gojko Adzic <https://gojko.net>
+
+## License
+
+* These scripts: [MIT](https://opensource.org/licenses/MIT)
+* Pandoc: https://github.com/jgm/pandoc/blob/master/COPYRIGHT
+* Contained libraries all have separate licenses, check the respective web sites for more information
